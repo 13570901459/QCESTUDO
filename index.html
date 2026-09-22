@@ -502,6 +502,7 @@
             border-radius: 12px;
             font-weight: 700;
             text-transform: uppercase;
+            cursor: pointer;
         }
 
         .badge-todo { background: var(--bg-input); color: var(--text-sub); }
@@ -637,7 +638,7 @@
 
             <div class="menu-section">
                 <h4>Backup & Dados</h4>
-                <button class="menu-item" onclick="exportData('global')">
+                <button class="menu-item" onclick="exportData()">
                     <span><i class="fa-solid fa-download" style="margin-right: 8px;"></i> Exportar (JSON)</span>
                 </button>
                 <label class="menu-item" style="cursor: pointer;">
@@ -975,7 +976,7 @@
                 today: { date: '', total: 0, correct: 0, wrong: 0 },
                 global: { total: 0, correct: 0, wrong: 0 },
                 batchLastScores: {},
-                userHistory: {} // armazena idQuestao: 'correct' | 'wrong'
+                userHistory: {} 
             },
             revisions: [],
             schedule: {
@@ -1534,7 +1535,7 @@
                 appState.stats.userHistory[q.id] = 'wrong';
             }
 
-            if (currentQuiz.batchScope && currentQuiz.batchScope !== 'all') {
+            if (currentQuiz.batchScope && currentQuiz.batchScope !== 'all' && currentQuiz.batchScope !== 'filtered') {
                 appState.stats.batchLastScores[currentQuiz.batchScope] = {
                     correct: currentQuiz.correctCount,
                     wrong: currentQuiz.wrongCount
@@ -1641,7 +1642,7 @@
             }
         }
 
-        // --- FUNCIONALIDADES DO UPGRADE: FILTRO DE QUESTÕES ---
+        // --- FILTRO DE QUESTÕES ---
         function renderFilterOptions() {
             const subSelect = document.getElementById('filter-subject-select');
             const revSelect = document.getElementById('revision-topic-select');
@@ -1747,43 +1748,25 @@
             };
         };
 
-        // --- FUNCIONALIDADES DO UPGRADE: QUADRO DE REVISÃO ESPAÇADA ---
+        // --- REVISÃO ESPAÇADA ---
         window.addRevisionItem = function() {
             const topicId = document.getElementById('revision-topic-select').value;
             if (!topicId) return alert('Selecione um assunto.');
 
-            let foundTopic = null;
-            let foundSub = null;
-
+            let name = topicId;
             appState.subjects.forEach(s => {
-                s.topics.forEach(t => {
-                    if (t.id === topicId) {
-                        foundTopic = t;
-                        foundSub = s;
-                    }
-                });
+                const t = s.topics.find(x => x.id === topicId);
+                if (t) name = `${s.name} - ${t.title}`;
             });
 
-            if (!foundTopic) return;
-
-            const now = new Date();
-            const formatStr = (d) => d.toISOString().split('T')[0];
-
-            const revObj = {
-                id: 'rev_' + Date.now(),
-                topicId: foundTopic.id,
-                topicTitle: foundTopic.title,
-                subjectName: foundSub.name,
-                startDate: formatStr(now),
-                cycles: {
-                    1: { date: formatStr(new Date(now.getTime() + 1 * 86400000)), done: false },
-                    3: { date: formatStr(new Date(now.getTime() + 3 * 86400000)), done: false },
-                    7: { date: formatStr(new Date(now.getTime() + 7 * 86400000)), done: false },
-                    30: { date: formatStr(new Date(now.getTime() + 30 * 86400000)), done: false }
-                }
+            const now = Date.now();
+            const rev = {
+                id: 'rev_' + now,
+                name: name,
+                createdAt: now
             };
 
-            appState.revisions.push(revObj);
+            appState.revisions.push(rev);
             saveStorage();
             renderRevisionList();
         };
@@ -1794,66 +1777,52 @@
             container.innerHTML = '';
 
             if (!appState.revisions || appState.revisions.length === 0) {
-                container.innerHTML = '<p style="color:var(--text-sub); font-size:0.85rem;">Nenhuma revisão agendada ainda.</p>';
+                container.innerHTML = '<p style="color:var(--text-sub); font-size:0.85rem;">Nenhuma revisão agendada.</p>';
                 return;
             }
 
-            appState.revisions.forEach(rev => {
+            const now = Date.now();
+            const dayMs = 86400000;
+
+            appState.revisions.forEach((rev, idx) => {
+                const diffDays = Math.floor((now - rev.createdAt) / dayMs);
+                
                 const div = document.createElement('div');
                 div.className = 'topic-item';
                 div.style.flexDirection = 'column';
                 div.style.alignItems = 'flex-start';
-                div.style.gap = '10px';
+                div.style.gap = '8px';
 
                 div.innerHTML = `
                     <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
-                        <div>
-                            <strong style="color:var(--text-main);">${rev.subjectName} - ${rev.topicTitle}</strong>
-                            <div style="font-size:0.75rem; color:var(--text-sub);">Início: ${rev.startDate}</div>
-                        </div>
-                        <button class="btn btn-danger" style="width:auto; padding:4px 8px; font-size:0.75rem;" onclick="deleteRevision('${rev.id}')"><i class="fa-regular fa-trash-can"></i></button>
+                        <strong>${rev.name}</strong>
+                        <button class="btn btn-danger" style="width:auto; padding:4px 8px; font-size:0.75rem;" onclick="removeRevision(${idx})"><i class="fa-solid fa-trash"></i></button>
                     </div>
-                    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:4px;">
-                        <span class="rev-badge rev-1d" style="${rev.cycles[1].done ? 'opacity:0.4; text-decoration:line-through;' : ''}" onclick="toggleRevCycle('${rev.id}', 1)">1D (${rev.cycles[1].date}) ${rev.cycles[1].done ? '✓' : ''}</span>
-                        <span class="rev-badge rev-3d" style="${rev.cycles[3].done ? 'opacity:0.4; text-decoration:line-through;' : ''}" onclick="toggleRevCycle('${rev.id}', 3)">3D (${rev.cycles[3].date}) ${rev.cycles[3].done ? '✓' : ''}</span>
-                        <span class="rev-badge rev-7d" style="${rev.cycles[7].done ? 'opacity:0.4; text-decoration:line-through;' : ''}" onclick="toggleRevCycle('${rev.id}', 7)">7D (${rev.cycles[7].date}) ${rev.cycles[7].done ? '✓' : ''}</span>
-                        <span class="rev-badge rev-30d" style="${rev.cycles[30].done ? 'opacity:0.4; text-decoration:line-through;' : ''}" onclick="toggleRevCycle('${rev.id}', 30)">30D (${rev.cycles[30].date}) ${rev.cycles[30].done ? '✓' : ''}</span>
+                    <div>
+                        <span class="rev-badge rev-1d" style="${diffDays >= 1 ? 'opacity:1;' : 'opacity:0.3;'}">1 Dia</span>
+                        <span class="rev-badge rev-3d" style="${diffDays >= 3 ? 'opacity:1;' : 'opacity:0.3;'}">3 Dias</span>
+                        <span class="rev-badge rev-7d" style="${diffDays >= 7 ? 'opacity:1;' : 'opacity:0.3;'}">7 Dias</span>
+                        <span class="rev-badge rev-30d" style="${diffDays >= 30 ? 'opacity:1;' : 'opacity:0.3;'}">30 Dias</span>
                     </div>
                 `;
                 container.appendChild(div);
             });
         }
 
-        window.toggleRevCycle = function(revId, cycleKey) {
-            const rev = appState.revisions.find(r => r.id === revId);
-            if (rev && rev.cycles[cycleKey]) {
-                rev.cycles[cycleKey].done = !rev.cycles[cycleKey].done;
-                saveStorage();
-                renderRevisionList();
-            }
-        };
-
-        window.deleteRevision = function(revId) {
-            appState.revisions = appState.revisions.filter(r => r.id !== revId);
+        window.removeRevision = function(idx) {
+            appState.revisions.splice(idx, 1);
             saveStorage();
             renderRevisionList();
         };
 
-        // --- FUNCIONALIDADES DO UPGRADE: CRONOGRAMA SEMANAL & CHECKLIST ---
+        // --- CRONOGRAMA SEMANAL ---
         window.addScheduleTask = function() {
             const day = document.getElementById('schedule-day-select').value;
             const text = document.getElementById('schedule-task-input').value.trim();
 
-            if (!text) return alert('Digite a tarefa.');
+            if (!text) return alert('Digite a descrição da tarefa.');
 
-            if (!appState.schedule[day]) appState.schedule[day] = [];
-
-            appState.schedule[day].push({
-                id: 'task_' + Date.now(),
-                title: text,
-                status: 'todo' // 'todo' | 'doing' | 'done'
-            });
-
+            appState.schedule[day].push({ id: 'task_' + Date.now(), text: text, status: 'todo' });
             saveStorage();
             document.getElementById('schedule-task-input').value = '';
             renderSchedule();
@@ -1875,27 +1844,24 @@
             };
 
             Object.keys(daysMap).forEach(dayKey => {
-                const tasks = appState.schedule[dayKey] || [];
-                const doneCount = tasks.filter(t => t.status === 'done').length;
-                const totalCount = tasks.length;
-                const pct = totalCount > 0 ? Math.round((doneCount / totalCount) * 100) : 0;
-
                 const dayCard = document.createElement('div');
                 dayCard.className = 'day-card';
 
                 let tasksHtml = '';
-                tasks.forEach(task => {
+                const tasks = appState.schedule[dayKey] || [];
+
+                tasks.forEach((t, tIdx) => {
                     let badgeClass = 'badge-todo';
-                    let statusLabel = 'A Fazer';
-                    if (task.status === 'doing') { badgeClass = 'badge-doing'; statusLabel = 'Em Andamento'; }
-                    if (task.status === 'done') { badgeClass = 'badge-done'; statusLabel = 'Feito'; }
+                    let badgeLabel = 'A Fazer';
+                    if (t.status === 'doing') { badgeClass = 'badge-doing'; badgeLabel = 'Em Andamento'; }
+                    if (t.status === 'done') { badgeClass = 'badge-done'; badgeLabel = 'Concluído'; }
 
                     tasksHtml += `
                         <li class="task-item">
-                            <span style="${task.status === 'done' ? 'text-decoration: line-through; color: var(--text-sub);' : ''}">${task.title}</span>
+                            <span>${t.text}</span>
                             <div style="display:flex; align-items:center; gap:6px;">
-                                <span class="badge-status ${badgeClass}" style="cursor:pointer;" onclick="cycleTaskStatus('${dayKey}', '${task.id}')">${statusLabel}</span>
-                                <i class="fa-solid fa-xmark" style="color:var(--danger); cursor:pointer; font-size:0.8rem;" onclick="deleteScheduleTask('${dayKey}', '${task.id}')"></i>
+                                <span class="badge-status ${badgeClass}" onclick="cycleTaskStatus('${dayKey}', ${tIdx})">${badgeLabel}</span>
+                                <i class="fa-solid fa-xmark" style="color:var(--text-sub); cursor:pointer;" onclick="removeTask('${dayKey}', ${tIdx})"></i>
                             </div>
                         </li>
                     `;
@@ -1904,44 +1870,93 @@
                 dayCard.innerHTML = `
                     <div class="day-title">
                         <span>${daysMap[dayKey]}</span>
-                        <span style="font-size:0.75rem; color:var(--text-sub); font-weight:600;">${pct}%</span>
+                        <span style="font-size:0.75rem; color:var(--text-sub);">${tasks.length} tarefas</span>
                     </div>
-                    <div class="progress-bar-bg" style="margin: 0 0 12px 0; height:6px;">
-                        <div class="progress-bar-fill" style="width: ${pct}%;"></div>
-                    </div>
-                    <ul class="task-list">
-                        ${tasksHtml || '<p style="color:var(--text-sub); font-size:0.75rem;">Nenhuma meta definida.</p>'}
-                    </ul>
+                    <ul class="task-list">${tasksHtml}</ul>
                 `;
-
                 container.appendChild(dayCard);
             });
         }
 
-        window.cycleTaskStatus = function(dayKey, taskId) {
-            const task = appState.schedule[dayKey].find(t => t.id === taskId);
-            if (task) {
-                if (task.status === 'todo') task.status = 'doing';
-                else if (task.status === 'doing') task.status = 'done';
-                else task.status = 'todo';
+        window.cycleTaskStatus = function(dayKey, idx) {
+            const task = appState.schedule[dayKey][idx];
+            if (task.status === 'todo') task.status = 'doing';
+            else if (task.status === 'doing') task.status = 'done';
+            else task.status = 'todo';
 
-                saveStorage();
-                renderSchedule();
-            }
-        };
-
-        window.deleteScheduleTask = function(dayKey, taskId) {
-            appState.schedule[dayKey] = appState.schedule[dayKey].filter(t => t.id !== taskId);
             saveStorage();
             renderSchedule();
         };
 
-        /* LOUSA TOUCH/MOUSE */
-        let canvas, ctx;
-        let isDrawing = false;
-        let isScratchActive = false;
-        let currentColor = '#ffd166';
-        let isEraser = false;
+        window.removeTask = function(dayKey, idx) {
+            appState.schedule[dayKey].splice(idx, 1);
+            saveStorage();
+            renderSchedule();
+        };
+
+        // --- BACKUP E RESTAURAÇÃO ---
+        window.exportData = function() {
+            const jsonStr = JSON.stringify(appState, null, 2);
+            const blob = new Blob([jsonStr], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `backup_qc_estudo_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+        };
+
+        window.importData = function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                try {
+                    const parsed = JSON.parse(evt.target.result);
+                    if (parsed.subjects && Array.isArray(parsed.subjects)) {
+                        appState = parsed;
+                        saveStorage();
+                        alert('Dados importados com sucesso!');
+                        location.reload();
+                    } else {
+                        throw new Error('Formato de dados incompatível.');
+                    }
+                } catch (err) {
+                    alert('Erro ao importar backup: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+        };
+
+        // --- CRONÔMETRO ---
+        window.startTimer = function() {
+            if (timerInterval) return;
+            timerInterval = setInterval(() => {
+                timerSeconds++;
+                updateTimerDisplay();
+            }, 1000);
+        };
+
+        window.pauseTimer = function() {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        };
+
+        window.resetTimer = function() {
+            pauseTimer();
+            timerSeconds = 0;
+            updateTimerDisplay();
+        };
+
+        function updateTimerDisplay() {
+            const hrs = String(Math.floor(timerSeconds / 3600)).padStart(2, '0');
+            const mins = String(Math.floor((timerSeconds % 3600) / 60)).padStart(2, '0');
+            const secs = String(timerSeconds % 60).padStart(2, '0');
+            document.getElementById('timer-display').innerText = `${hrs}:${mins}:${secs}`;
+        }
+
+        // --- LOUSA VIRTUAL ---
+        let canvas, ctx, isDrawing = false, strokeColor = '#ffd166';
 
         function initCanvas() {
             canvas = document.getElementById('scratch-canvas');
@@ -1953,131 +1968,81 @@
             canvas.addEventListener('mousemove', draw);
             canvas.addEventListener('mouseup', stopDrawing);
 
-            canvas.addEventListener('touchstart', handleTouch);
-            canvas.addEventListener('touchmove', handleTouch);
+            canvas.addEventListener('touchstart', startDrawingTouch, { passive: false });
+            canvas.addEventListener('touchmove', drawTouch, { passive: false });
             canvas.addEventListener('touchend', stopDrawing);
         }
 
         function resizeCanvas() {
+            if (!canvas) return;
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
         }
 
         window.toggleScratchpad = function() {
-            isScratchActive = !isScratchActive;
+            canvas.classList.toggle('active');
             const btn = document.getElementById('btn-toggle-scratch');
-            if (isScratchActive) {
-                canvas.classList.add('active');
-                btn.innerHTML = '<i class="fa-solid fa-pen"></i> Lousa: ON';
-                btn.classList.replace('btn-secondary', 'btn-primary');
+            if (canvas.classList.contains('active')) {
+                btn.classList.replace('btn-secondary', 'btn-warning');
             } else {
-                canvas.classList.remove('active');
-                btn.innerHTML = '<i class="fa-solid fa-pen"></i> Lousa: OFF';
-                btn.classList.replace('btn-primary', 'btn-secondary');
+                btn.classList.replace('btn-warning', 'btn-secondary');
             }
         };
 
         window.setColor = function(color, el) {
-            isEraser = false;
-            currentColor = color;
+            strokeColor = color;
+            ctx.globalCompositeOperation = 'source-over';
             document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
             if (el) el.classList.add('active');
         };
 
-        window.setEraser = function() { isEraser = true; };
-        window.clearCanvas = function() { ctx.clearRect(0, 0, canvas.width, canvas.height); };
+        window.setEraser = function() {
+            ctx.globalCompositeOperation = 'destination-out';
+        };
+
+        window.clearCanvas = function() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        };
 
         function startDrawing(e) {
-            if (!isScratchActive) return;
+            if (!canvas.classList.contains('active')) return;
             isDrawing = true;
-            draw(e);
+            ctx.beginPath();
+            ctx.moveTo(e.clientX, e.clientY);
         }
 
         function draw(e) {
-            if (!isDrawing || !isScratchActive) return;
-            ctx.lineWidth = isEraser ? 25 : 3;
+            if (!isDrawing || !canvas.classList.contains('active')) return;
+            ctx.strokeStyle = strokeColor;
+            ctx.lineWidth = 3;
             ctx.lineCap = 'round';
-
-            if (isEraser) {
-                ctx.globalCompositeOperation = 'destination-out';
-            } else {
-                ctx.globalCompositeOperation = 'source-over';
-                ctx.strokeStyle = currentColor;
-            }
-
-            const x = e.clientX || (e.touches && e.touches[0].clientX);
-            const y = e.clientY || (e.touches && e.touches[0].clientY);
-
-            ctx.lineTo(x, y);
+            ctx.lineTo(e.clientX, e.clientY);
             ctx.stroke();
+        }
+
+        function startDrawingTouch(e) {
+            if (!canvas.classList.contains('active')) return;
+            e.preventDefault();
+            isDrawing = true;
+            const touch = e.touches[0];
             ctx.beginPath();
-            ctx.moveTo(x, y);
+            ctx.moveTo(touch.clientX, touch.clientY);
+        }
+
+        function drawTouch(e) {
+            if (!isDrawing || !canvas.classList.contains('active')) return;
+            e.preventDefault();
+            const touch = e.touches[0];
+            ctx.strokeStyle = strokeColor;
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
+            ctx.lineTo(touch.clientX, touch.clientY);
+            ctx.stroke();
         }
 
         function stopDrawing() {
             isDrawing = false;
-            ctx.beginPath();
         }
-
-        function handleTouch(e) {
-            if (!isScratchActive) return;
-            e.preventDefault();
-            if (e.type === 'touchstart') startDrawing(e);
-            else if (e.type === 'touchmove') draw(e);
-        }
-
-        /* CRONÔMETRO */
-        window.startTimer = function() {
-            if (!timerInterval) {
-                timerInterval = setInterval(() => {
-                    timerSeconds++;
-                    const h = String(Math.floor(timerSeconds / 3600)).padStart(2, '0');
-                    const m = String(Math.floor((timerSeconds % 3600) / 60)).padStart(2, '0');
-                    const s = String(timerSeconds % 60).padStart(2, '0');
-                    document.getElementById('timer-display').innerText = `${h}:${m}:${s}`;
-                }, 1000);
-            }
-        };
-
-        window.pauseTimer = function() {
-            clearInterval(timerInterval);
-            timerInterval = null;
-        };
-
-        window.resetTimer = function() {
-            pauseTimer();
-            timerSeconds = 0;
-            document.getElementById('timer-display').innerText = '00:00:00';
-        };
-
-        window.exportData = function(type) {
-            let dataObj = appState;
-            let fileName = `backup_estudos_geral_${new Date().toISOString().split('T')[0]}.json`;
-
-            const blob = new Blob([JSON.stringify(dataObj, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = fileName;
-            a.click();
-        };
-
-        window.importData = function(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                try {
-                    appState = JSON.parse(event.target.result);
-                    saveStorage();
-                    alert('Dados importados com sucesso para o Firebase!');
-                } catch (err) {
-                    alert('Erro ao carregar o arquivo JSON.');
-                }
-            };
-            reader.readAsText(file);
-        };
     </script>
 </body>
 </html>
