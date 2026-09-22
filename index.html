@@ -241,6 +241,7 @@
             font-size: 0.9rem;
             line-height: 1.5;
             color: var(--text-main);
+            white-space: pre-line;
         }
 
         .comment-box h5 {
@@ -513,7 +514,7 @@
                 <div class="form-group">
                     <label>Cadastrar Lote de Questões em JSON (com Gabarito Comentado)</label>
                     <input type="text" id="input-batch-name" class="form-control" placeholder="Nome do Lote (Ex: Lote 1)" style="margin-bottom: 8px;">
-                    <textarea id="input-batch-json" class="form-control" placeholder='[{"pergunta": "Qual a alternativa correta?", "opcoes": ["A) Opção 1", "B) Opção 2"], "resposta": 0, "comentario": "Gabarito A. Explicativo aqui..."}]'></textarea>
+                    <textarea id="input-batch-json" class="form-control" placeholder='Cole aqui a estrutura JSON...'></textarea>
                     <button class="btn btn-success" style="margin-top: 8px;" onclick="saveBatchJson()">Colar Lote de Questões (JSON)</button>
                 </div>
             </div>
@@ -590,16 +591,16 @@
             onAuthStateChanged 
         } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        // CONFIGURAÇÃO DO SEU FIREBASE CONSOLE
+        // CONFIGURAÇÃO DO FIREBASE CONSOLE
         const firebaseConfig = {
-      apiKey: "AIzaSyCUpkn3zhkdt3nCEaURN8GzaBbtimpQKOE",
-      authDomain: "qgestudo.firebaseapp.com",
-      projectId: "qgestudo",
-      storageBucket: "qgestudo.firebasestorage.app",
-      messagingSenderId: "939034677008",
-      appId: "1:939034677008:web:348adbf8cd89b3ed145f95",
-      measurementId: "G-PC8ESJHFZ5"
-    };
+            apiKey: "AIzaSyCUpkn3zhkdt3nCEaURN8GzaBbtimpQKOE",
+            authDomain: "qgestudo.firebaseapp.com",
+            projectId: "qgestudo",
+            storageBucket: "qgestudo.firebasestorage.app",
+            messagingSenderId: "939034677008",
+            appId: "1:939034677008:web:348adbf8cd89b3ed145f95",
+            measurementId: "G-PC8ESJHFZ5"
+        };
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
@@ -636,7 +637,6 @@
                 document.getElementById('auth-overlay').classList.add('hidden');
                 document.getElementById('user-display-email').innerText = user.email || user.displayName;
                 
-                // Os dados do Firestore ficam separados por cada usuário (ID do Usuário)
                 attachFirestoreListener(user.uid);
             } else {
                 currentUser = null;
@@ -905,21 +905,61 @@
 
             try {
                 const parsed = JSON.parse(jsonText);
-                if (!Array.isArray(parsed)) throw new Error('O JSON precisa ser um array.');
+                let rawQuestions = [];
+
+                if (Array.isArray(parsed)) {
+                    rawQuestions = parsed;
+                } else if (parsed && Array.isArray(parsed.questoes)) {
+                    rawQuestions = parsed.questoes;
+                } else {
+                    throw new Error('O JSON precisa ser um array ou conter uma chave "questoes".');
+                }
 
                 const sub = appState.subjects.find(s => s.id === currentSubjectId);
                 const topic = sub.topics.find(t => t.id === currentTopicId);
 
+                const normalizedQuestions = rawQuestions.map((q, i) => {
+                    let text = q.pergunta || q.enunciado || q.question || '';
+
+                    let rawOptions = q.opcoes || q.alternativas || q.options;
+                    let optionsArr = [];
+
+                    if (Array.isArray(rawOptions)) {
+                        optionsArr = rawOptions;
+                    } else if (typeof rawOptions === 'object' && rawOptions !== null) {
+                        optionsArr = Object.entries(rawOptions).map(([key, val]) => `${key}) ${val}`);
+                    }
+
+                    let correctVal = q.resposta !== undefined ? q.resposta : (q.resposta_correta !== undefined ? q.resposta_correta : q.answer);
+                    let correctIdx = 0;
+
+                    if (typeof correctVal === 'number') {
+                        correctIdx = (correctVal >= 1 && correctVal <= optionsArr.length) ? correctVal - 1 : correctVal;
+                    } else if (typeof correctVal === 'string') {
+                        const parsedNum = parseInt(correctVal, 10);
+                        if (!isNaN(parsedNum) && parsedNum >= 1 && parsedNum <= optionsArr.length) {
+                            correctIdx = parsedNum - 1;
+                        } else {
+                            const found = labels.indexOf(correctVal.trim().toUpperCase());
+                            if (found !== -1) correctIdx = found;
+                        }
+                    }
+
+                    let comment = q.comentario || q.comentario_gabarito || q.gabarito || q.comment || '';
+
+                    return {
+                        id: 'q_' + Date.now() + '_' + i + '_' + Math.random().toString(36).substr(2, 4),
+                        pergunta: text,
+                        opcoes: optionsArr,
+                        resposta: correctIdx,
+                        comentario: comment
+                    };
+                });
+
                 const newBatch = {
                     id: 'batch_' + Date.now(),
                     name: name,
-                    questions: parsed.map((q, i) => ({
-                        id: 'q_' + Date.now() + '_' + i,
-                        pergunta: q.pergunta || q.question,
-                        opcoes: q.opcoes || q.options,
-                        resposta: q.resposta !== undefined ? q.resposta : q.answer,
-                        comentario: q.comentario || q.gabarito || q.comment || ''
-                    }))
+                    questions: normalizedQuestions
                 };
 
                 topic.batches.push(newBatch);
