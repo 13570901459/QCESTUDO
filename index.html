@@ -56,13 +56,11 @@
             background-attachment: fixed;
         }
 
-        /* Scrollbar customizada */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg-main); }
         ::-webkit-scrollbar-thumb { background: var(--border-highlight); border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--text-sub); }
 
-        /* BRANDING / LOGO QC ESTUDO */
         .brand-logo {
             display: flex;
             align-items: center;
@@ -95,7 +93,6 @@
             font-weight: 400;
         }
 
-        /* HEADER */
         header {
             background: var(--glass-bg);
             backdrop-filter: blur(12px);
@@ -142,7 +139,6 @@
             border: 1px solid var(--border);
         }
 
-        /* DRAWER MENU */
         .drawer-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -197,7 +193,6 @@
             transform: translateX(3px); color: #ffffff;
         }
 
-        /* CONTAINER PRINCIPAL */
         .container {
             padding: 28px 20px; max-width: 1140px;
             margin: 0 auto; width: 100%; flex: 1;
@@ -213,7 +208,6 @@
             content: ''; flex: 1; height: 1px; background: var(--border);
         }
 
-        /* CARDS E GRID DE ESTATÍSTICAS */
         .grid-stats {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
             gap: 14px; margin-bottom: 28px;
@@ -223,6 +217,7 @@
             background: var(--bg-card); border: 1px solid var(--border);
             border-radius: 14px; padding: 18px 14px; text-align: center;
             transition: all 0.2s ease; position: relative; overflow: hidden;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
 
         .stat-card:hover {
@@ -230,8 +225,14 @@
             box-shadow: var(--shadow-sm);
         }
 
+        .stat-icon {
+            width: 42px; height: 42px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; margin-bottom: 10px;
+        }
+
         .stat-card h5 {
-            color: var(--text-sub); font-size: 0.75rem; margin-bottom: 8px;
+            color: var(--text-sub); font-size: 0.75rem; margin-bottom: 6px;
             font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
         }
 
@@ -250,7 +251,6 @@
 
         .card:hover { border-color: var(--border-highlight); }
 
-        /* FORMULÁRIOS & BOTÕES */
         .form-group { margin-bottom: 18px; }
         .form-group label {
             display: block; font-size: 0.85rem; font-weight: 600;
@@ -294,7 +294,6 @@
         }
         .btn-google:hover { background: #f8fafc; }
 
-        /* PROGRESS BAR */
         .progress-bar-bg {
             background: var(--bg-main); height: 10px;
             border-radius: 6px; overflow: hidden; margin: 10px 0 18px;
@@ -307,7 +306,6 @@
             border-radius: 6px;
         }
 
-        /* ASSUNTOS / TÓPICOS */
         .topic-item {
             background: var(--bg-main); border: 1px solid var(--border);
             border-radius: 12px; padding: 16px; margin-bottom: 12px;
@@ -336,7 +334,6 @@
             color: var(--warning); letter-spacing: 2px;
         }
 
-        /* QUIZ OVERLAY */
         #quiz-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: var(--bg-main); z-index: 300; display: flex; flex-direction: column;
@@ -416,7 +413,6 @@
 
         .color-dot.active { border-color: #ffffff; transform: scale(1.15); }
 
-        /* AUTENTICAÇÃO / LOGIN */
         #auth-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: var(--bg-main); z-index: 400; display: flex;
@@ -459,6 +455,71 @@
             background: var(--bg-main); border-radius: 8px; margin-bottom: 16px; word-break: break-all;
             border: 1px solid var(--border);
         }
+
+        /* COMPONENTES DO UPGRADE */
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .day-card {
+            background: var(--bg-main);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .day-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: var(--text-main);
+        }
+
+        .task-list {
+            list-style: none;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-card);
+            border: 1px solid var(--border-highlight);
+            padding: 10px 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 0.88rem;
+        }
+
+        .badge-status {
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge-todo { background: var(--bg-input); color: var(--text-sub); }
+        .badge-doing { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+        .badge-done { background: var(--success-glow); color: var(--success); }
+
+        .rev-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-right: 6px;
+        }
+        .rev-1d { background: rgba(37, 99, 235, 0.2); color: #60a5fa; }
+        .rev-3d { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+        .rev-7d { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+        .rev-30d { background: rgba(168, 85, 247, 0.2); color: #c084fc; }
     </style>
 </head>
 <body>
@@ -551,6 +612,18 @@
                     <span><i class="fa-solid fa-chart-pie" style="margin-right: 8px;"></i> Dashboard</span>
                     <i class="fa-solid fa-chevron-right" style="font-size: 0.75rem;"></i>
                 </button>
+                <button class="menu-item" onclick="navigate('filter-questions')">
+                    <span><i class="fa-solid fa-filter" style="margin-right: 8px;"></i> Filtro de Questões</span>
+                    <i class="fa-solid fa-chevron-right" style="font-size: 0.75rem;"></i>
+                </button>
+                <button class="menu-item" onclick="navigate('revision')">
+                    <span><i class="fa-solid fa-rotate" style="margin-right: 8px;"></i> Quadro de Revisão</span>
+                    <i class="fa-solid fa-chevron-right" style="font-size: 0.75rem;"></i>
+                </button>
+                <button class="menu-item" onclick="navigate('schedule')">
+                    <span><i class="fa-regular fa-calendar-days" style="margin-right: 8px;"></i> Cronograma Semanal</span>
+                    <i class="fa-solid fa-chevron-right" style="font-size: 0.75rem;"></i>
+                </button>
                 <button class="menu-item" onclick="navigate('add-subject')">
                     <span><i class="fa-solid fa-folder-plus" style="margin-right: 8px;"></i> Nova Disciplina</span>
                     <i class="fa-solid fa-chevron-right" style="font-size: 0.75rem;"></i>
@@ -578,39 +651,74 @@
     <!-- Container Principal -->
     <div class="container">
         
-        <!-- DASHBOARD -->
+        <!-- DASHBOARD PROFISSIONAL -->
         <div id="view-dashboard">
-            <div class="section-title"><i class="fa-regular fa-calendar-check"></i> Desempenho de Hoje</div>
+            <div class="section-title"><i class="fa-regular fa-calendar-check"></i> Desempenho do Dia</div>
             <div class="grid-stats">
                 <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(37, 99, 235, 0.15); color: var(--accent);">
+                        <i class="fa-solid fa-list-check"></i>
+                    </div>
                     <h5>Feitas Hoje</h5>
                     <div class="num" id="dash-today-total">0</div>
                 </div>
                 <div class="stat-card">
+                    <div class="stat-icon" style="background: var(--success-glow); color: var(--success);">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
                     <h5>Acertos Hoje</h5>
                     <div class="num text-success" id="dash-today-correct">0</div>
                 </div>
                 <div class="stat-card">
+                    <div class="stat-icon" style="background: var(--danger-glow); color: var(--danger);">
+                        <i class="fa-solid fa-circle-xmark"></i>
+                    </div>
                     <h5>Erros Hoje</h5>
                     <div class="num text-danger" id="dash-today-wrong">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(245, 158, 11, 0.15); color: var(--warning);">
+                        <i class="fa-solid fa-chart-pie"></i>
+                    </div>
+                    <h5>Aproveitamento</h5>
+                    <div class="num text-warning" id="dash-today-pct">0%</div>
                 </div>
             </div>
 
             <div class="section-title"><i class="fa-solid fa-chart-line"></i> Desempenho Geral</div>
             <div class="grid-stats">
                 <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(255, 255, 255, 0.08); color: var(--text-main);">
+                        <i class="fa-solid fa-layer-group"></i>
+                    </div>
                     <h5>Total Feitas</h5>
                     <div class="num" id="dash-global-total">0</div>
                 </div>
                 <div class="stat-card">
+                    <div class="stat-icon" style="background: var(--success-glow); color: var(--success);">
+                        <i class="fa-solid fa-check"></i>
+                    </div>
                     <h5>Acertos Geral</h5>
                     <div class="num text-success" id="dash-global-correct">0</div>
                 </div>
                 <div class="stat-card">
+                    <div class="stat-icon" style="background: var(--danger-glow); color: var(--danger);">
+                        <i class="fa-solid fa-xmark"></i>
+                    </div>
                     <h5>Erros Geral</h5>
                     <div class="num text-danger" id="dash-global-wrong">0</div>
                 </div>
                 <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: var(--success);">
+                        <i class="fa-solid fa-percent"></i>
+                    </div>
+                    <h5>Aproveitamento</h5>
+                    <div class="num text-success" id="dash-global-pct">0%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(37, 99, 235, 0.15); color: var(--accent);">
+                        <i class="fa-solid fa-database"></i>
+                    </div>
                     <h5>Banco de Questões</h5>
                     <div class="num text-accent" id="dash-global-bank">0</div>
                 </div>
@@ -618,6 +726,90 @@
 
             <div class="section-title"><i class="fa-solid fa-bars-progress"></i> Aproveitamento por Disciplina</div>
             <div id="dash-subjects-progress"></div>
+        </div>
+
+        <!-- FILTRO DE QUESTÕES -->
+        <div id="view-filter-questions" class="hidden">
+            <div class="card">
+                <h3 style="margin-bottom: 20px; font-weight: 700;"><i class="fa-solid fa-filter" style="color: var(--accent);"></i> Filtrar Questões</h3>
+                
+                <div class="form-group">
+                    <label>Disciplina</label>
+                    <select id="filter-subject-select" class="form-control" onchange="updateFilterTopics()">
+                        <option value="">Todas as Disciplinas</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Assunto</label>
+                    <select id="filter-topic-select" class="form-control">
+                        <option value="">Todos os Assuntos</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Status das Questões</label>
+                    <select id="filter-status-select" class="form-control">
+                        <option value="all">Todas as Questões</option>
+                        <option value="correct">Somente as que Acertei</option>
+                        <option value="wrong">Somente as que Errei</option>
+                        <option value="blank">Não Respondidas (Em Branco)</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-primary" onclick="applyQuestionsFilter()"><i class="fa-solid fa-magnifying-glass"></i> Gerar Caderno de Questões</button>
+            </div>
+
+            <div class="card hidden" id="filter-results-card">
+                <h4 style="margin-bottom: 16px; font-weight: 700;"><i class="fa-solid fa-list-check" style="color: var(--warning);"></i> Questões Encontradas</h4>
+                <p id="filter-count-text" style="color: var(--text-sub); margin-bottom: 16px; font-size: 0.9rem;"></p>
+                <button class="btn btn-success" id="btn-start-filtered-quiz"><i class="fa-solid fa-play"></i> Iniciar Simulado Filtrado</button>
+            </div>
+        </div>
+
+        <!-- QUADRO DE REVISÃO -->
+        <div id="view-revision" class="hidden">
+            <div class="card">
+                <h3 style="margin-bottom: 20px; font-weight: 700;"><i class="fa-solid fa-rotate" style="color: var(--accent);"></i> Quadro de Revisão Espaçada</h3>
+                
+                <div class="form-group">
+                    <label>Agendar Nova Revisão de Assunto</label>
+                    <div style="display: flex; gap: 10px;">
+                        <select id="revision-topic-select" class="form-control"></select>
+                        <button class="btn btn-primary" style="width: auto; white-space: nowrap;" onclick="addRevisionItem()"><i class="fa-solid fa-plus"></i> Agendar</button>
+                    </div>
+                </div>
+
+                <div class="section-title" style="margin-top: 24px;"><i class="fa-solid fa-clock-rotate-left"></i> Ciclos Programados (1, 3, 7 e 30 dias)</div>
+                <div id="revision-list-container"></div>
+            </div>
+        </div>
+
+        <!-- CRONOGRAMA SEMANAL / CHECKLIST -->
+        <div id="view-schedule" class="hidden">
+            <div class="card">
+                <h3 style="margin-bottom: 12px; font-weight: 700;"><i class="fa-regular fa-calendar-days" style="color: var(--accent);"></i> Planejamento Semanal</h3>
+                <p style="color: var(--text-sub); font-size: 0.85rem; margin-bottom: 20px;">Gerencie suas metas diárias, acompanhe o checklist e o progresso em tempo real.</p>
+                
+                <div class="form-group">
+                    <label>Adicionar Tarefa ao Cronograma</label>
+                    <div style="display: grid; grid-template-columns: 140px 1fr auto; gap: 10px;">
+                        <select id="schedule-day-select" class="form-control">
+                            <option value="segunda">Segunda</option>
+                            <option value="terca">Terça</option>
+                            <option value="quarta">Quarta</option>
+                            <option value="quinta">Quinta</option>
+                            <option value="sexta">Sexta</option>
+                            <option value="sabado">Sábado</option>
+                            <option value="domingo">Domingo</option>
+                        </select>
+                        <input type="text" id="schedule-task-input" class="form-control" placeholder="Ex: Resolver 30 questões de Português + Leitura do PDF">
+                        <button class="btn btn-primary" style="width: auto;" onclick="addScheduleTask()"><i class="fa-solid fa-plus"></i> Add</button>
+                    </div>
+                </div>
+
+                <div class="days-grid" id="schedule-days-container"></div>
+            </div>
         </div>
 
         <!-- NOVA DISCIPLINA -->
@@ -701,7 +893,6 @@
     <div id="quiz-overlay" class="hidden">
         <canvas id="scratch-canvas"></canvas>
 
-        <!-- Barra Superior -->
         <div class="quiz-top-bar">
             <div style="font-size: 0.85rem; font-weight: 600;">
                 <span id="quiz-progress-num" style="color: var(--text-main);">Questão 1/10</span>
@@ -716,14 +907,12 @@
             </div>
         </div>
 
-        <!-- Navegação no Topo -->
         <div class="quiz-nav-top">
             <button class="btn btn-secondary" id="btn-prev-q" style="flex:1;" onclick="navigateQuestion(-1)"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
             <button class="btn btn-primary" id="btn-confirm-q" style="flex:2;" onclick="confirmAnswer()"><i class="fa-solid fa-check-double"></i> Confirmar Resposta</button>
             <button class="btn btn-secondary" id="btn-next-q" style="flex:1;" onclick="navigateQuestion(1)">Próxima <i class="fa-solid fa-chevron-right"></i></button>
         </div>
 
-        <!-- Corpo da Questão -->
         <div class="quiz-body">
             <div class="card">
                 <p id="quiz-question-text" style="font-size: 1.05rem; line-height: 1.6; font-weight: 500; color: var(--text-main);"></p>
@@ -736,7 +925,6 @@
             </div>
         </div>
 
-        <!-- Barra da Lousa -->
         <div class="canvas-tools">
             <button class="btn btn-secondary" id="btn-toggle-scratch" style="padding: 6px 12px; width: auto; border-radius: 20px;" onclick="toggleScratchpad()"><i class="fa-solid fa-pen"></i> Lousa</button>
             <div class="color-dot active" style="background: #ffd166;" onclick="setColor('#ffd166', this)"></div>
@@ -763,7 +951,6 @@
             onAuthStateChanged 
         } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        // CONFIGURAÇÃO DO FIREBASE CONSOLE
         const firebaseConfig = {
             apiKey: "AIzaSyCUpkn3zhkdt3nCEaURN8GzaBbtimpQKOE",
             authDomain: "qgestudo.firebaseapp.com",
@@ -787,7 +974,12 @@
             stats: {
                 today: { date: '', total: 0, correct: 0, wrong: 0 },
                 global: { total: 0, correct: 0, wrong: 0 },
-                batchLastScores: {}
+                batchLastScores: {},
+                userHistory: {} // armazena idQuestao: 'correct' | 'wrong'
+            },
+            revisions: [],
+            schedule: {
+                segunda: [], terca: [], quarta: [], quinta: [], sexta: [], sabado: [], domingo: []
             },
             topicProgress: {},
             activeSession: null
@@ -796,13 +988,13 @@
         let currentSubjectId = null;
         let currentTopicId = null;
         let currentQuiz = null;
+        let filteredQuestionsList = [];
         let timerInterval = null;
         let timerSeconds = 0;
         let currentAuthMode = 'login';
 
         const labels = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
 
-        // Monitoramento de Sessão de Usuário (Auth Observer)
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 currentUser = user;
@@ -821,10 +1013,24 @@
             const userDocRef = doc(db, "usuarios_estudos", uid);
             unsubscribeFirestore = onSnapshot(userDocRef, (docSnap) => {
                 if (docSnap.exists()) {
-                    appState = docSnap.data();
+                    const data = docSnap.data();
+                    appState = {
+                        ...appState,
+                        ...data,
+                        stats: {
+                            ...appState.stats,
+                            ...(data.stats || {}),
+                            userHistory: (data.stats && data.stats.userHistory) ? data.stats.userHistory : {}
+                        },
+                        revisions: data.revisions || [],
+                        schedule: data.schedule || { segunda: [], terca: [], quarta: [], quinta: [], sexta: [], sabado: [], domingo: [] }
+                    };
                     checkTodayDate();
                     renderDashboard();
                     renderDrawerSubjects();
+                    renderFilterOptions();
+                    renderRevisionList();
+                    renderSchedule();
                     
                     if (currentSubjectId) {
                         const sub = appState.subjects.find(s => s.id === currentSubjectId);
@@ -853,7 +1059,7 @@
             }
         }
 
-        // --- FUNÇÕES DE AUTENTICAÇÃO ---
+        // --- AUTENTICAÇÃO ---
         window.switchAuthTab = function(mode) {
             currentAuthMode = mode;
             document.getElementById('tab-login').classList.toggle('active', mode === 'login');
@@ -913,6 +1119,9 @@
             document.querySelectorAll('.container > div').forEach(div => div.classList.add('hidden'));
             document.getElementById(`view-${viewName}`).classList.remove('hidden');
             if (viewName === 'dashboard') renderDashboard();
+            if (viewName === 'filter-questions') renderFilterOptions();
+            if (viewName === 'revision') renderRevisionList();
+            if (viewName === 'schedule') renderSchedule();
             toggleDrawer();
         };
 
@@ -1284,7 +1493,9 @@
                 commentContainer.classList.add('hidden');
             }
 
-            appState.topicProgress[currentQuiz.topicId] = currentQuiz;
+            if (currentQuiz.topicId) {
+                appState.topicProgress[currentQuiz.topicId] = currentQuiz;
+            }
             appState.activeSession = currentQuiz;
             saveStorage();
         }
@@ -1316,12 +1527,14 @@
             if (isCorrect) {
                 appState.stats.today.correct++;
                 appState.stats.global.correct++;
+                appState.stats.userHistory[q.id] = 'correct';
             } else {
                 appState.stats.today.wrong++;
                 appState.stats.global.wrong++;
+                appState.stats.userHistory[q.id] = 'wrong';
             }
 
-            if (currentQuiz.batchScope !== 'all') {
+            if (currentQuiz.batchScope && currentQuiz.batchScope !== 'all') {
                 appState.stats.batchLastScores[currentQuiz.batchScope] = {
                     correct: currentQuiz.correctCount,
                     wrong: currentQuiz.wrongCount
@@ -1351,12 +1564,14 @@
             if (confirm("Excluir esta questão permanentemente do lote?")) {
                 const qId = currentQuiz.questions[currentQuiz.currentIndex].id;
 
-                const sub = appState.subjects.find(s => s.id === currentQuiz.subjectId);
-                const topic = sub.topics.find(t => t.id === currentQuiz.topicId);
+                if (currentQuiz.subjectId && currentQuiz.topicId) {
+                    const sub = appState.subjects.find(s => s.id === currentQuiz.subjectId);
+                    const topic = sub.topics.find(t => t.id === currentQuiz.topicId);
 
-                topic.batches.forEach(b => {
-                    b.questions = b.questions.filter(q => q.id !== qId);
-                });
+                    topic.batches.forEach(b => {
+                        b.questions = b.questions.filter(q => q.id !== qId);
+                    });
+                }
 
                 currentQuiz.questions.splice(currentQuiz.currentIndex, 1);
                 saveStorage();
@@ -1374,13 +1589,25 @@
         };
 
         function renderDashboard() {
-            document.getElementById('dash-today-total').innerText = appState.stats.today.total;
-            document.getElementById('dash-today-correct').innerText = appState.stats.today.correct;
-            document.getElementById('dash-today-wrong').innerText = appState.stats.today.wrong;
+            const todayTotal = appState.stats.today.total || 0;
+            const todayCorrect = appState.stats.today.correct || 0;
+            const todayWrong = appState.stats.today.wrong || 0;
+            const todayPct = todayTotal > 0 ? Math.round((todayCorrect / todayTotal) * 100) : 0;
 
-            document.getElementById('dash-global-total').innerText = appState.stats.global.total;
-            document.getElementById('dash-global-correct').innerText = appState.stats.global.correct;
-            document.getElementById('dash-global-wrong').innerText = appState.stats.global.wrong;
+            document.getElementById('dash-today-total').innerText = todayTotal;
+            document.getElementById('dash-today-correct').innerText = todayCorrect;
+            document.getElementById('dash-today-wrong').innerText = todayWrong;
+            document.getElementById('dash-today-pct').innerText = todayPct + '%';
+
+            const globalTotal = appState.stats.global.total || 0;
+            const globalCorrect = appState.stats.global.correct || 0;
+            const globalWrong = appState.stats.global.wrong || 0;
+            const globalPct = globalTotal > 0 ? Math.round((globalCorrect / globalTotal) * 100) : 0;
+
+            document.getElementById('dash-global-total').innerText = globalTotal;
+            document.getElementById('dash-global-correct').innerText = globalCorrect;
+            document.getElementById('dash-global-wrong').innerText = globalWrong;
+            document.getElementById('dash-global-pct').innerText = globalPct + '%';
 
             let bankTotal = 0;
             if (appState.subjects) {
@@ -1413,6 +1640,301 @@
                 });
             }
         }
+
+        // --- FUNCIONALIDADES DO UPGRADE: FILTRO DE QUESTÕES ---
+        function renderFilterOptions() {
+            const subSelect = document.getElementById('filter-subject-select');
+            const revSelect = document.getElementById('revision-topic-select');
+            
+            subSelect.innerHTML = '<option value="">Todas as Disciplinas</option>';
+            if (revSelect) revSelect.innerHTML = '';
+
+            appState.subjects.forEach(sub => {
+                const opt = document.createElement('option');
+                opt.value = sub.id;
+                opt.innerText = sub.name;
+                subSelect.appendChild(opt);
+
+                sub.topics.forEach(top => {
+                    if (revSelect) {
+                        const rOpt = document.createElement('option');
+                        rOpt.value = top.id;
+                        rOpt.innerText = `${sub.name} -> ${top.title}`;
+                        revSelect.appendChild(rOpt);
+                    }
+                });
+            });
+
+            updateFilterTopics();
+        }
+
+        window.updateFilterTopics = function() {
+            const subId = document.getElementById('filter-subject-select').value;
+            const topSelect = document.getElementById('filter-topic-select');
+            topSelect.innerHTML = '<option value="">Todos os Assuntos</option>';
+
+            if (!subId) {
+                appState.subjects.forEach(s => {
+                    s.topics.forEach(t => {
+                        const opt = document.createElement('option');
+                        opt.value = t.id;
+                        opt.innerText = `${s.name} -> ${t.title}`;
+                        topSelect.appendChild(opt);
+                    });
+                });
+            } else {
+                const sub = appState.subjects.find(s => s.id === subId);
+                if (sub) {
+                    sub.topics.forEach(t => {
+                        const opt = document.createElement('option');
+                        opt.value = t.id;
+                        opt.innerText = t.title;
+                        topSelect.appendChild(opt);
+                    });
+                }
+            }
+        };
+
+        window.applyQuestionsFilter = function() {
+            const selectedSub = document.getElementById('filter-subject-select').value;
+            const selectedTop = document.getElementById('filter-topic-select').value;
+            const selectedStatus = document.getElementById('filter-status-select').value;
+
+            filteredQuestionsList = [];
+
+            appState.subjects.forEach(sub => {
+                if (selectedSub && sub.id !== selectedSub) return;
+
+                sub.topics.forEach(top => {
+                    if (selectedTop && top.id !== selectedTop) return;
+
+                    top.batches.forEach(batch => {
+                        batch.questions.forEach(q => {
+                            const status = appState.stats.userHistory[q.id];
+
+                            if (selectedStatus === 'correct' && status !== 'correct') return;
+                            if (selectedStatus === 'wrong' && status !== 'wrong') return;
+                            if (selectedStatus === 'blank' && status !== undefined) return;
+
+                            filteredQuestionsList.push(q);
+                        });
+                    });
+                });
+            });
+
+            const resultsCard = document.getElementById('filter-results-card');
+            const countText = document.getElementById('filter-count-text');
+
+            resultsCard.classList.remove('hidden');
+            countText.innerText = `Foram encontradas ${filteredQuestionsList.length} questões com os filtros selecionados.`;
+
+            document.getElementById('btn-start-filtered-quiz').onclick = () => {
+                if (filteredQuestionsList.length === 0) return alert('Nenhuma questão encontrada para este filtro.');
+
+                currentQuiz = {
+                    subjectId: null,
+                    topicId: null,
+                    batchScope: 'filtered',
+                    questions: filteredQuestionsList,
+                    currentIndex: 0,
+                    correctCount: 0,
+                    wrongCount: 0,
+                    userAnswers: {},
+                    confirmedQuestions: {}
+                };
+
+                openQuizView();
+            };
+        };
+
+        // --- FUNCIONALIDADES DO UPGRADE: QUADRO DE REVISÃO ESPAÇADA ---
+        window.addRevisionItem = function() {
+            const topicId = document.getElementById('revision-topic-select').value;
+            if (!topicId) return alert('Selecione um assunto.');
+
+            let foundTopic = null;
+            let foundSub = null;
+
+            appState.subjects.forEach(s => {
+                s.topics.forEach(t => {
+                    if (t.id === topicId) {
+                        foundTopic = t;
+                        foundSub = s;
+                    }
+                });
+            });
+
+            if (!foundTopic) return;
+
+            const now = new Date();
+            const formatStr = (d) => d.toISOString().split('T')[0];
+
+            const revObj = {
+                id: 'rev_' + Date.now(),
+                topicId: foundTopic.id,
+                topicTitle: foundTopic.title,
+                subjectName: foundSub.name,
+                startDate: formatStr(now),
+                cycles: {
+                    1: { date: formatStr(new Date(now.getTime() + 1 * 86400000)), done: false },
+                    3: { date: formatStr(new Date(now.getTime() + 3 * 86400000)), done: false },
+                    7: { date: formatStr(new Date(now.getTime() + 7 * 86400000)), done: false },
+                    30: { date: formatStr(new Date(now.getTime() + 30 * 86400000)), done: false }
+                }
+            };
+
+            appState.revisions.push(revObj);
+            saveStorage();
+            renderRevisionList();
+        };
+
+        function renderRevisionList() {
+            const container = document.getElementById('revision-list-container');
+            if (!container) return;
+            container.innerHTML = '';
+
+            if (!appState.revisions || appState.revisions.length === 0) {
+                container.innerHTML = '<p style="color:var(--text-sub); font-size:0.85rem;">Nenhuma revisão agendada ainda.</p>';
+                return;
+            }
+
+            appState.revisions.forEach(rev => {
+                const div = document.createElement('div');
+                div.className = 'topic-item';
+                div.style.flexDirection = 'column';
+                div.style.alignItems = 'flex-start';
+                div.style.gap = '10px';
+
+                div.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
+                        <div>
+                            <strong style="color:var(--text-main);">${rev.subjectName} - ${rev.topicTitle}</strong>
+                            <div style="font-size:0.75rem; color:var(--text-sub);">Início: ${rev.startDate}</div>
+                        </div>
+                        <button class="btn btn-danger" style="width:auto; padding:4px 8px; font-size:0.75rem;" onclick="deleteRevision('${rev.id}')"><i class="fa-regular fa-trash-can"></i></button>
+                    </div>
+                    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:4px;">
+                        <span class="rev-badge rev-1d" style="${rev.cycles[1].done ? 'opacity:0.4; text-decoration:line-through;' : ''}" onclick="toggleRevCycle('${rev.id}', 1)">1D (${rev.cycles[1].date}) ${rev.cycles[1].done ? '✓' : ''}</span>
+                        <span class="rev-badge rev-3d" style="${rev.cycles[3].done ? 'opacity:0.4; text-decoration:line-through;' : ''}" onclick="toggleRevCycle('${rev.id}', 3)">3D (${rev.cycles[3].date}) ${rev.cycles[3].done ? '✓' : ''}</span>
+                        <span class="rev-badge rev-7d" style="${rev.cycles[7].done ? 'opacity:0.4; text-decoration:line-through;' : ''}" onclick="toggleRevCycle('${rev.id}', 7)">7D (${rev.cycles[7].date}) ${rev.cycles[7].done ? '✓' : ''}</span>
+                        <span class="rev-badge rev-30d" style="${rev.cycles[30].done ? 'opacity:0.4; text-decoration:line-through;' : ''}" onclick="toggleRevCycle('${rev.id}', 30)">30D (${rev.cycles[30].date}) ${rev.cycles[30].done ? '✓' : ''}</span>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        window.toggleRevCycle = function(revId, cycleKey) {
+            const rev = appState.revisions.find(r => r.id === revId);
+            if (rev && rev.cycles[cycleKey]) {
+                rev.cycles[cycleKey].done = !rev.cycles[cycleKey].done;
+                saveStorage();
+                renderRevisionList();
+            }
+        };
+
+        window.deleteRevision = function(revId) {
+            appState.revisions = appState.revisions.filter(r => r.id !== revId);
+            saveStorage();
+            renderRevisionList();
+        };
+
+        // --- FUNCIONALIDADES DO UPGRADE: CRONOGRAMA SEMANAL & CHECKLIST ---
+        window.addScheduleTask = function() {
+            const day = document.getElementById('schedule-day-select').value;
+            const text = document.getElementById('schedule-task-input').value.trim();
+
+            if (!text) return alert('Digite a tarefa.');
+
+            if (!appState.schedule[day]) appState.schedule[day] = [];
+
+            appState.schedule[day].push({
+                id: 'task_' + Date.now(),
+                title: text,
+                status: 'todo' // 'todo' | 'doing' | 'done'
+            });
+
+            saveStorage();
+            document.getElementById('schedule-task-input').value = '';
+            renderSchedule();
+        };
+
+        function renderSchedule() {
+            const container = document.getElementById('schedule-days-container');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const daysMap = {
+                segunda: 'Segunda-feira',
+                terca: 'Terça-feira',
+                quarta: 'Quarta-feira',
+                quinta: 'Quinta-feira',
+                sexta: 'Sexta-feira',
+                sabado: 'Sábado',
+                domingo: 'Domingo'
+            };
+
+            Object.keys(daysMap).forEach(dayKey => {
+                const tasks = appState.schedule[dayKey] || [];
+                const doneCount = tasks.filter(t => t.status === 'done').length;
+                const totalCount = tasks.length;
+                const pct = totalCount > 0 ? Math.round((doneCount / totalCount) * 100) : 0;
+
+                const dayCard = document.createElement('div');
+                dayCard.className = 'day-card';
+
+                let tasksHtml = '';
+                tasks.forEach(task => {
+                    let badgeClass = 'badge-todo';
+                    let statusLabel = 'A Fazer';
+                    if (task.status === 'doing') { badgeClass = 'badge-doing'; statusLabel = 'Em Andamento'; }
+                    if (task.status === 'done') { badgeClass = 'badge-done'; statusLabel = 'Feito'; }
+
+                    tasksHtml += `
+                        <li class="task-item">
+                            <span style="${task.status === 'done' ? 'text-decoration: line-through; color: var(--text-sub);' : ''}">${task.title}</span>
+                            <div style="display:flex; align-items:center; gap:6px;">
+                                <span class="badge-status ${badgeClass}" style="cursor:pointer;" onclick="cycleTaskStatus('${dayKey}', '${task.id}')">${statusLabel}</span>
+                                <i class="fa-solid fa-xmark" style="color:var(--danger); cursor:pointer; font-size:0.8rem;" onclick="deleteScheduleTask('${dayKey}', '${task.id}')"></i>
+                            </div>
+                        </li>
+                    `;
+                });
+
+                dayCard.innerHTML = `
+                    <div class="day-title">
+                        <span>${daysMap[dayKey]}</span>
+                        <span style="font-size:0.75rem; color:var(--text-sub); font-weight:600;">${pct}%</span>
+                    </div>
+                    <div class="progress-bar-bg" style="margin: 0 0 12px 0; height:6px;">
+                        <div class="progress-bar-fill" style="width: ${pct}%;"></div>
+                    </div>
+                    <ul class="task-list">
+                        ${tasksHtml || '<p style="color:var(--text-sub); font-size:0.75rem;">Nenhuma meta definida.</p>'}
+                    </ul>
+                `;
+
+                container.appendChild(dayCard);
+            });
+        }
+
+        window.cycleTaskStatus = function(dayKey, taskId) {
+            const task = appState.schedule[dayKey].find(t => t.id === taskId);
+            if (task) {
+                if (task.status === 'todo') task.status = 'doing';
+                else if (task.status === 'doing') task.status = 'done';
+                else task.status = 'todo';
+
+                saveStorage();
+                renderSchedule();
+            }
+        };
+
+        window.deleteScheduleTask = function(dayKey, taskId) {
+            appState.schedule[dayKey] = appState.schedule[dayKey].filter(t => t.id !== taskId);
+            saveStorage();
+            renderSchedule();
+        };
 
         /* LOUSA TOUCH/MOUSE */
         let canvas, ctx;
